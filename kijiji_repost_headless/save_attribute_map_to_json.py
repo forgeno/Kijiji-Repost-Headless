@@ -131,6 +131,8 @@ for category_id in all_categories:
     select_boxes = newAdPageSoup.find_all(['select'], {"name": lambda x: x and x.startswith('postAdForm')})
     input_boxes = newAdPageSoup.find_all(['input'], {"name": lambda x: x and x.startswith('postAdForm'), "type": "text"})
     input_radios = newAdPageSoup.find_all(['input'], {"name": lambda x: x and x.startswith('postAdForm'), "type": "radio"})
+    input_check = newAdPageSoup.find_all(['input'], {"name": lambda x: x and x.startswith('postAdForm'), "type": "checkbox"})
+    tag_box = newAdPageSoup.find_all(['input'], {"name": lambda x: x and x.startswith('postAdForm'), "id": "pstad-tagsInput"})
 
     useless_attributes_array = ["pstad-email"]
     for item in select_boxes:
@@ -168,6 +170,25 @@ for category_id in all_categories:
 
         category_props['attributes'].append(attributes)
 
+    for item in input_check:
+        #Human readable label of input box
+        item_label = newAdPageSoup.find('label', {'for': item['id']})
+
+        #Current attribute being examined
+        attributes = {}
+        attributes['attribute_type'] = "input"
+        attributes['attribute_name'] = item['name']
+        attributes['attribute_human_readable'] = item_label.text.replace('\n', '').strip()
+        if item_label is None:
+            attributes['attribute_human_readable'] = item["id"]
+        else:
+            attributes['attribute_human_readable'] = item_label.text.replace('\n','').strip()
+
+        if item['id'] in useless_attributes_array:
+            continue
+
+        category_props['attributes'].append(attributes)
+
     for item in input_radios:
         #Human readable label of radio
         item_label = newAdPageSoup.find('label', {'for': item['id']})
@@ -191,6 +212,29 @@ for category_id in all_categories:
         category_props['attributes'].append(attributes)
 
     postAdAttributes.append(category_props)
+
+    for item in tag_box:
+        #Human readable label of radio
+        item_label = newAdPageSoup.find('label', {'for': item['id']})
+
+        #Current attribute being examined
+        attributes = {}
+        attributes['attribute_type'] = "input"
+        attributes['attribute_name'] = item['name']
+        attributes['attribute_human_readable'] = item_label.text.replace('\n','').strip()
+
+        item_name = item.parent.text.replace('\n', '').strip().lstrip()
+
+        # if the attribute is already in the dictionary... add the option to the options dict
+        if item_label is None:
+            attributes['attribute_human_readable'] = item["id"]
+        else:
+            attributes['attribute_human_readable'] = item_label.text.replace('\n','').strip()
+
+        if item['id'] in useless_attributes_array:
+            continue
+
+        category_props['attributes'].append(attributes)
 
 with open('kijiji_categories_attrs.json', 'w') as fp:
     json.dump(postAdAttributes, fp)

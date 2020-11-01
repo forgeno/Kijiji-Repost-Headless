@@ -138,7 +138,7 @@ def delete_ad(args, api=None):
             if item == "categoryId":
                 del_ad_category = data[item]
         try:
-            api.delete_ad_using_title(del_ad_name, del_ad_category)
+            api.delete_ad_using_title(del_ad_name)
             print("Deletion successful or unaffected")
         except kijiji_api.KijijiApiException:
             print("Did not find an existing ad with matching title, skipping ad deletion")
