@@ -13,8 +13,6 @@ def post_ad():
     process = subprocess.Popen(bash, stdout=sys.stdout, stderr=sys.stderr, shell=True)
     process.wait()
     print('Finished auto repost ad')
-    # bashCommand = 'pushd /Users/ima/dev/Python/Kijiji-Repost-Headless/;source venv/bin/activate;python kijiji_repost_headless -u ivan_ma@hotmail.ca -p Tm#AO0x@ijxVEerstJZrO repost ads/gk/item.yaml;deactivate;popd'
-    # subprocess.Popen(bashCommand, stdout=subprocess.PIPE, shell=True)
 
 post_ad()
 # repeat_times = input('Please enter the number of times you would like to repeat post?: ')
